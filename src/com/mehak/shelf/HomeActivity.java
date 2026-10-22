@@ -156,6 +156,7 @@ public class HomeActivity extends Activity {
         scroller.setAlpha(1f);
         scroller.setScaleX(1f);
         scroller.setScaleY(1f);
+        scroller.setTranslationY(0f);
         // Settings may have changed while we were away.
         int newColumns = Prefs.columns(this);
         if (newColumns != columns) {
@@ -262,9 +263,10 @@ public class HomeActivity extends Activity {
         // and the apps can come back over the scene while it's still playing.
         root.addView(saver, 1, match());
         saver.start();                       // aerial fades itself in
-        // Apps gently recede as the aerial takes over.
-        scroller.animate().alpha(0f).scaleX(0.93f).scaleY(0.93f)
-                .setDuration(900).setInterpolator(new DecelerateInterpolator()).start();
+        // Apps slide down off the bottom as the aerial rises in behind them.
+        scroller.animate().translationY(slideDistance()).scaleX(0.92f).scaleY(0.92f).alpha(0f)
+                .setDuration(1300).setInterpolator(new android.view.animation.AccelerateInterpolator(1.4f))
+                .start();
     };
 
     private void armScreensaver() {
@@ -274,7 +276,7 @@ public class HomeActivity extends Activity {
     }
 
     private Screensaver leaving;         // dismissed, still playing under the apps
-    private static final long APPS_RETURN_MS = 650;
+    private static final long APPS_RETURN_MS = 850;
     private static final long SETTLE_MS = 4200;
 
     /**
@@ -288,14 +290,21 @@ public class HomeActivity extends Activity {
         leaving = saver;
         saver = null;
         leaving.returningHome(APPS_RETURN_MS);
+        // Apps slide back up from the bottom, zooming into place.
         scroller.animate().cancel();
-        scroller.animate().alpha(1f).scaleX(1f).scaleY(1f)
-                .setDuration(APPS_RETURN_MS).setInterpolator(new DecelerateInterpolator()).start();
+        scroller.animate().translationY(0f).scaleX(1f).scaleY(1f).alpha(1f)
+                .setDuration(APPS_RETURN_MS).setInterpolator(new DecelerateInterpolator(1.6f)).start();
         // The scene keeps moving under the returning apps and winds down
         // slowly to a standstill before it becomes the still wallpaper.
         final Screensaver s = leaving;
         s.slowToStop(SETTLE_MS, () -> { if (leaving == s) finishSaver(false); });
         return true;
+    }
+
+    /** How far the apps travel to clear the bottom of the screen. */
+    private float slideDistance() {
+        int panelTopOnScreen = dock.getTop() - scroller.getScrollY();
+        return Math.max(dp(120), root.getHeight() - panelTopOnScreen + dp(24));
     }
 
     /** Freezes the leaving scene, hands its frame to the wallpaper, then removes it. */
