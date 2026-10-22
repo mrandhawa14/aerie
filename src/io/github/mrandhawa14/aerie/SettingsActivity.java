@@ -1,4 +1,4 @@
-package com.mehak.shelf;
+package io.github.mrandhawa14.aerie;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**
- * Shelf's own settings, plus direct shortcuts into the real Fire TV settings.
+ * Aerie's own settings, plus direct shortcuts into the real Fire TV settings.
  * A plain focusable list styled like the home grid — no Amazon chrome.
  */
 public class SettingsActivity extends Activity {

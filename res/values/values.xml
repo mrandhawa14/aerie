@@ -2,7 +2,7 @@
 <resources>
     <string name="override_description">Makes the remote\'s Home button open your clean home screen instead of Amazon\'s.</string>
 
-    <style name="ShelfTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen">
+    <style name="AerieTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowNoTitle">true</item>

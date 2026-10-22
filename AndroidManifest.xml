@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mehak.shelf"
+    package="io.github.mrandhawa14.aerie"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="0.1.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="28" />
 
@@ -13,10 +13,10 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
-        android:label="Home"
+        android:label="Aerie"
         android:icon="@drawable/app_icon"
         android:banner="@drawable/app_banner"
-        android:theme="@style/ShelfTheme"
+        android:theme="@style/AerieTheme"
         android:allowBackup="false">
 
         <activity
@@ -43,7 +43,7 @@
 
         <activity
             android:name=".SettingsActivity"
-            android:theme="@style/ShelfTheme"
+            android:theme="@style/AerieTheme"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|uiMode"
             android:exported="false" />
@@ -51,7 +51,7 @@
         <!-- Swallows the remote's Home key and replaces Amazon's home screen. -->
         <service
             android:name=".HomeOverrideService"
-            android:label="Home override"
+            android:label="Aerie Home button"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true">
             <intent-filter>

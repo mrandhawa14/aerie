@@ -1,4 +1,4 @@
-package com.mehak.shelf;
+package io.github.mrandhawa14.aerie;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
@@ -26,8 +26,8 @@ import android.widget.ImageView;
  * which arrives ~130 ms after the press and ~120 ms before Amazon draws its
  * first frame. At that moment a pre-built full-screen overlay (accessibility
  * overlays sit above every app) is made visible, showing the last frame of
- * Shelf, and Shelf is brought forward underneath. The overlay hides again once
- * Shelf has drawn, so the hand-off is invisible.
+ * Aerie, and Aerie is brought forward underneath. The overlay hides again once
+ * Aerie has drawn, so the hand-off is invisible.
  */
 public class HomeOverrideService extends AccessibilityService {
 

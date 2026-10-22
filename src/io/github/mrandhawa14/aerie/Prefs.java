@@ -1,4 +1,4 @@
-package com.mehak.shelf;
+package io.github.mrandhawa14.aerie;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 /** One place for every stored setting, so Home and Settings never disagree. */
 public final class Prefs {
 
-    public static final String FILE = "shelf";
+    public static final String FILE = "aerie";
 
     // keys
     public static final String ORDER = "order";

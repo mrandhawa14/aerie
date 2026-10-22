@@ -1,4 +1,4 @@
-package com.mehak.shelf;
+package io.github.mrandhawa14.aerie;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,18 +47,25 @@ public class HomeActivity extends Activity {
 
     private int columns = 5;
 
-    // First-run order; anything else installed later goes after these.
+    // First-run order for common apps; anything else installed follows,
+    // and the order can be changed from the remote (hold Select / Menu).
     private static final List<String> PREFERRED = Arrays.asList(
-            "com.netflix.ninja",
-            "com.amazon.firetv.youtube",
-            "com.kodjodevf.mangayomi",
-            "com.apple.airplay.amazon.airplay",
-            "com.esaba.downloader");
+            "com.netflix.ninja",                    // Netflix
+            "com.amazon.firetv.youtube",            // YouTube (Fire TV)
+            "com.google.android.youtube.tv",        // YouTube (Android TV)
+            "com.disney.disneyplus",                // Disney+
+            "com.amazon.avod",                      // Prime Video
+            "com.hulu.plus",                        // Hulu
+            "com.wbd.stream",                       // Max
+            "com.apple.atve.amazon.appletv",        // Apple TV
+            "com.plexapp.android",                  // Plex
+            "org.jellyfin.androidtv",               // Jellyfin
+            "com.spotify.tv.android",               // Spotify
+            "com.apple.airplay.amazon.airplay");    // AirPlay
 
-    // Never shown: this app, and launchers that would compete with it.
+    // Never shown: this app, and the stock launcher it replaces.
     private static final Set<String> EXCLUDED = new HashSet<>(Arrays.asList(
-            "com.mehak.shelf",
-            "com.spocky.projengmenu",
+            "io.github.mrandhawa14.aerie",
             "com.amazon.tv.launcher"));
 
     private SharedPreferences prefs;
@@ -89,7 +96,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle saved) {
         super.onCreate(saved);
-        prefs = getSharedPreferences("shelf", MODE_PRIVATE);
+        prefs = Prefs.get(this);
 
         columns = Prefs.columns(this);
 

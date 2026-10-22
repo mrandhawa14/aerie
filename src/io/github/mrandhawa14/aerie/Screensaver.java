@@ -1,4 +1,4 @@
-package com.mehak.shelf;
+package io.github.mrandhawa14.aerie;
 
 import android.content.Context;
 import android.graphics.Bitmap;
