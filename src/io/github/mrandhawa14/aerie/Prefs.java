@@ -15,6 +15,10 @@ public final class Prefs {
     public static final String COLUMNS = "columns";            // 4 / 5 / 6
     public static final String SCREENSAVER_MIN = "screensaver_min"; // 0 = off
     public static final String SCENE = "scene";                // aerial scene name
+    // Accessibility (Aerie's own; Fire TV's are in its settings)
+    public static final String REDUCE_MOTION = "reduce_motion";   // fades instead of zoom/slide
+    public static final String ALWAYS_LABELS = "always_labels";   // app names under every tile
+    public static final String LARGE_TEXT = "large_text";         // bigger names and clock
 
     // Wallpapers. "scenery" = aerial still (the screensaver's last frame);
     // "dynamic" = tint follows the focused app; the rest are fixed palettes.
@@ -56,6 +60,18 @@ public final class Prefs {
 
     public static String scene(Context c) {
         return get(c).getString(SCENE, "waterfall");
+    }
+
+    public static boolean reduceMotion(Context c) {
+        return get(c).getBoolean(REDUCE_MOTION, false);
+    }
+
+    public static boolean alwaysLabels(Context c) {
+        return get(c).getBoolean(ALWAYS_LABELS, false);
+    }
+
+    public static boolean largeText(Context c) {
+        return get(c).getBoolean(LARGE_TEXT, false);
     }
 
     public static int screensaverMin(Context c) {

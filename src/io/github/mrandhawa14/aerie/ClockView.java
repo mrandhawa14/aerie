@@ -56,6 +56,12 @@ public class ClockView extends LinearLayout {
         update();
     }
 
+    /** Larger text accessibility option. */
+    public void setLarge(boolean large) {
+        time.setTextSize(large ? 70 : 56);
+        date.setTextSize(large ? 21 : 17);
+    }
+
     /** The one place the clock's position is defined. */
     public static FrameLayout.LayoutParams layoutParams(Context c) {
         float d = c.getResources().getDisplayMetrics().density;

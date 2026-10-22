@@ -46,6 +46,8 @@ public class HomeActivity extends Activity {
     private static final String SETTINGS_ID = "#settings";
 
     private int columns = 5;
+    // Accessibility options, re-read whenever the home screen comes back.
+    private boolean reduceMotion, alwaysLabels, largeText;
 
     // First-run order for common apps; anything else installed follows,
     // and the order can be changed from the remote (hold Select / Menu).
@@ -171,6 +173,12 @@ public class HomeActivity extends Activity {
             grid.setColumnCount(columns);
             dirty = true;
         }
+        boolean labels = Prefs.alwaysLabels(this), large = Prefs.largeText(this);
+        if (labels != alwaysLabels || large != largeText) dirty = true;
+        alwaysLabels = labels;
+        largeText = large;
+        reduceMotion = Prefs.reduceMotion(this);
+        clock.setLarge(largeText);
         applyWallpaper();
         if (dirty) rebuild(null);
         armScreensaver();
@@ -270,10 +278,15 @@ public class HomeActivity extends Activity {
         // and the apps can come back over the scene while it's still playing.
         root.addView(saver, 1, match());
         saver.start();                       // aerial fades itself in
-        // Apps slide down and settle along the bottom edge, staying visible,
-        // while the aerial rises in behind them.
-        dockToBottom();
-        saver.shadeUnderApps(0.75f, 1300);
+        if (reduceMotion) {
+            // No sliding: the apps simply fade out over the scene.
+            scroller.animate().alpha(0f).setDuration(900).start();
+        } else {
+            // Apps slide down and settle along the bottom edge, staying visible,
+            // while the aerial rises in behind them.
+            dockToBottom();
+            saver.shadeUnderApps(0.75f, 1300);
+        }
     };
 
     private void armScreensaver() {
@@ -297,8 +310,14 @@ public class HomeActivity extends Activity {
         leaving = saver;
         saver = null;
         leaving.shadeUnderApps(1f, APPS_RETURN_MS);
-        // Apps slide back up from the bottom edge, zooming into place.
         scroller.animate().cancel();
+        if (reduceMotion) {
+            // Apps fade back in and the scene simply stops: no zoom, no slow-down.
+            scroller.animate().alpha(1f).setDuration(500).start();
+            handler.postDelayed(() -> { if (leaving != null) finishSaver(false); }, 500);
+            return true;
+        }
+        // Apps slide back up from the bottom edge, zooming into place.
         scroller.animate().translationY(0f).scaleX(1f).scaleY(1f).alpha(1f)
                 .setDuration(APPS_RETURN_MS).setInterpolator(new DecelerateInterpolator(1.6f)).start();
         // The scene keeps moving under the returning apps and winds down
@@ -551,25 +570,30 @@ public class HomeActivity extends Activity {
         final TextView label = new TextView(this);
         label.setText(t.label);
         label.setTextColor(Color.WHITE);
-        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, largeText ? 16 : 13);
         label.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         label.setGravity(Gravity.CENTER_HORIZONTAL);
         label.setSingleLine(true);
-        label.setAlpha(0f);
+        final float restingLabel = alwaysLabels ? 0.75f : 0f;
+        label.setAlpha(restingLabel);
         label.setShadowLayer(dp(4), 0, dp(1), 0x99000000);
         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(w, ViewGroup.LayoutParams.WRAP_CONTENT);
         llp.topMargin = dp(14);
         cell.addView(label, llp);
 
         tile.setOnFocusChangeListener((v, has) -> {
+            // Reduce motion keeps the focus lift (it's how you see where you
+            // are) but makes it instant instead of animated.
+            long d = reduceMotion ? 0 : 200;
             float s = has ? 1.12f : 1f;
             tile.animate().scaleX(s).scaleY(s).translationZ(has ? dp(18) : 0)
-                    .setInterpolator(new DecelerateInterpolator()).setDuration(200).start();
-            sheen.animate().alpha(has ? 1f : 0f).setDuration(200).start();
+                    .setInterpolator(new DecelerateInterpolator()).setDuration(d).start();
+            sheen.animate().alpha(has ? 1f : 0f).setDuration(d).start();
             float g = has ? 1f : 0.85f;
             glow.animate().alpha(has ? 1f : 0f).scaleX(glowX * g).scaleY(glowY * g)
-                    .setInterpolator(new DecelerateInterpolator()).setDuration(has ? 260 : 200).start();
-            label.animate().alpha(has ? 1f : 0f).translationY(has ? dp(4) : 0).setDuration(200).start();
+                    .setInterpolator(new DecelerateInterpolator()).setDuration(reduceMotion ? 0 : has ? 260 : 200).start();
+            label.animate().alpha(has ? 1f : restingLabel)
+                    .translationY(has && !reduceMotion ? dp(4) : 0).setDuration(d).start();
             if (has) {
                 wallpaper.tintTo(t.tint);
                 // After ScrollView's own minimal scroll, show the whole cell.

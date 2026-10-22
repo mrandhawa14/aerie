@@ -26,9 +26,17 @@ banners, carousels, sponsored rows or "recommended for you".
   focused app) or one of five colour themes.
 - **Clock.** Time and date in the top-left corner, in the same place on the
   home screen and in the screensaver.
-- **Settings that work.** A clean settings screen for Aerie, plus direct
-  shortcuts into the real Fire TV settings (Network, Display & Sound,
-  Applications, Remotes & Bluetooth, My Account, About).
+- **Settings that work.** One screen for Aerie's options and every Fire TV
+  settings page an app is allowed to open: Network, Remotes & Bluetooth,
+  pairing, Applications, Notifications, About, updates, USB drive and
+  Developer options each open directly. The pages Amazon reserves for its own
+  apps (Accessibility, Display & Audio, Inputs, Preferences, Parental
+  controls, Account & Profiles) are one step away through the full Fire TV
+  Settings grid.
+- **Accessibility.** Reduce motion (fades instead of zooming and sliding),
+  always show app names, and larger text, plus a shortcut to Fire TV's own
+  accessibility features (VoiceView, captions, magnifier, high contrast text).
+- **Hidden apps.** Hide apps from the grid and bring them back from Settings.
 - **Your order.** Hold Select (or press the ≡ Menu button) on any tile to move
   it, send it to the top row, or hide it.
 - **Small.** About 40 KB, plain Java, no libraries.
@@ -52,6 +60,11 @@ Aerie works within that:
 What that means in practice: Amazon's launcher still exists and sits idle in
 memory, but with the debloat script below its ads and recommendation services
 are switched off and it is never shown.
+
+The same wall applies to settings: many Fire TV settings pages require a
+permission only Amazon-signed apps can hold (`com.amazon.tv.permission.LAUNCHER_SETTINGS`
+and similar), so no third-party app can open them directly. Aerie links to
+every page that is open, and to Amazon's full settings grid for the rest.
 
 ## Install
 
