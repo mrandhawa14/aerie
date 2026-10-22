@@ -263,10 +263,10 @@ public class HomeActivity extends Activity {
         // and the apps can come back over the scene while it's still playing.
         root.addView(saver, 1, match());
         saver.start();                       // aerial fades itself in
-        // Apps slide down off the bottom as the aerial rises in behind them.
-        scroller.animate().translationY(slideDistance()).scaleX(0.92f).scaleY(0.92f).alpha(0f)
-                .setDuration(1300).setInterpolator(new android.view.animation.AccelerateInterpolator(1.4f))
-                .start();
+        // Apps slide down and settle along the bottom edge, staying visible,
+        // while the aerial rises in behind them.
+        dockToBottom();
+        saver.shadeUnderApps(0.75f, 1300);
     };
 
     private void armScreensaver() {
@@ -289,8 +289,8 @@ public class HomeActivity extends Activity {
         if (saver == null) return false;
         leaving = saver;
         saver = null;
-        leaving.returningHome(APPS_RETURN_MS);
-        // Apps slide back up from the bottom, zooming into place.
+        leaving.shadeUnderApps(1f, APPS_RETURN_MS);
+        // Apps slide back up from the bottom edge, zooming into place.
         scroller.animate().cancel();
         scroller.animate().translationY(0f).scaleX(1f).scaleY(1f).alpha(1f)
                 .setDuration(APPS_RETURN_MS).setInterpolator(new DecelerateInterpolator(1.6f)).start();
@@ -301,10 +301,26 @@ public class HomeActivity extends Activity {
         return true;
     }
 
-    /** How far the apps travel to clear the bottom of the screen. */
-    private float slideDistance() {
-        int panelTopOnScreen = dock.getTop() - scroller.getScrollY();
-        return Math.max(dp(120), root.getHeight() - panelTopOnScreen + dp(24));
+    private static final float DOCKED_SCALE = 0.92f;
+
+    /**
+     * Slides the first row of apps down to rest just above the bottom edge
+     * (slightly smaller), scaling around that row so it lands exactly there.
+     */
+    private void dockToBottom() {
+        View firstCell = grid.getChildCount() > 0 ? grid.getChildAt(0) : null;
+        if (firstCell == null) return;
+        View tile = firstCell.findViewWithTag("tile");
+        int rowTop = dock.getTop() + grid.getTop() + firstCell.getTop() - scroller.getScrollY();
+        int h = tile.getHeight();
+        float rowCenter = rowTop + h / 2f;
+        float target = root.getHeight() - dp(52) - h * DOCKED_SCALE / 2f;   // room for the label
+        scroller.setPivotX(scroller.getWidth() / 2f);
+        scroller.setPivotY(rowCenter);
+        scroller.animate().translationY(target - rowCenter)
+                .scaleX(DOCKED_SCALE).scaleY(DOCKED_SCALE)
+                .setDuration(1300).setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                .start();
     }
 
     /** Freezes the leaving scene, hands its frame to the wallpaper, then removes it. */

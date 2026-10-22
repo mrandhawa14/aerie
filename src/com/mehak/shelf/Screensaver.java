@@ -271,9 +271,9 @@ public class Screensaver extends FrameLayout {
                 .withEndAction(done).start();
     }
 
-    /** The apps are rising back in: shade the bottom like the wallpaper does. */
-    void returningHome(long ms) {
-        android.animation.ValueAnimator a = android.animation.ValueAnimator.ofFloat(scrim.underApps, 1f);
+    /** Shades the bottom where the apps sit (1 = same as the Scenery wallpaper). */
+    void shadeUnderApps(float to, long ms) {
+        android.animation.ValueAnimator a = android.animation.ValueAnimator.ofFloat(scrim.underApps, to);
         a.setDuration(ms);
         a.addUpdateListener(v -> {
             scrim.underApps = (float) v.getAnimatedValue();
